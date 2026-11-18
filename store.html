@@ -80,7 +80,7 @@
   <div class="items" id="items"></div>
   <div class="dfoot">
     <div class="total"><span>Total</span><span id="total">₱0</span></div>
-    <button class="btn primary" id="checkout" disabled>Check out and pay</button>
+    <a class="btn primary" id="checkout" href="cart.html">View cart</a>
   </div>
 </aside>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -127,7 +127,7 @@ function drawCart(){
       <button class="rm" data-rm="${id}">Remove</button></div>`}).join("")
     :`<p class="empty">Your cart is empty.<br>Add a book to get started.</p>`;
   $("#total").textContent=peso(cartTotal(cart));
-  $("#checkout").disabled=!ids.length;
+  $("#checkout").classList.toggle("off",!ids.length);
 }
 let tt;
 function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("show"),1600)}
@@ -158,9 +158,7 @@ $("#search").oninput=e=>{term=e.target.value.trim().toLowerCase();drawBooks()};
 $("#sort").onchange=e=>{sort=e.target.value;drawBooks()};
 $("#openCart").onclick=()=>openCart(true);
 $("#closeCart").onclick=$("#scrim").onclick=()=>openCart(false);
-$("#checkout").onclick=()=>{saveCart(cart);$("#checkout").textContent="Opening payment…";location.href="checkout.html"};
 document.addEventListener("keydown",e=>{if(e.key==="Escape")openCart(false)});
-window.addEventListener("pageshow",()=>{$("#checkout").textContent="Check out and pay"});
 drawFilters();drawBooks();drawCart();
 </script>
 <script src="back.js"></script>
