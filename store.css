@@ -72,3 +72,47 @@ dialog input,dialog select{padding:10px 12px;border:2px solid var(--line);border
 .ok{padding:30px 24px;text-align:center}
 @media(max-width:700px){.hero{grid-template-columns:1fr}.kids img{height:130px}.tabs a{padding:6px 10px}.nav-pill{gap:8px;padding:6px 12px}.brand small{display:none}}
 @media(prefers-reduced-motion:reduce){.drawer{transition:none}}
+
+/* ---- store extras: trust strip, tools, quantity, toast ---- */
+.trust{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:10px 28px;margin:6px auto 0;padding:0 5vw;font-weight:800;color:var(--purple)}
+.tools{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:-8px 0 22px}
+.tools input,.tools select{padding:10px 14px;border:2px solid var(--line);border-radius:999px;font:700 .95rem Nunito,sans-serif;background:#fff;color:var(--ink)}
+.tools input{flex:1;min-width:180px;max-width:320px}
+.tools input:focus,.tools select:focus{outline:none;border-color:var(--purple)}
+.shown{margin-left:auto;color:#6d6797;font-weight:700}
+.none{grid-column:1/-1;text-align:center;color:#6d6797;padding:30px}
+.qty{display:inline-flex;align-items:center;background:#efe7ff;border-radius:999px;padding:2px}
+.qty button{width:34px;height:34px;border:0;border-radius:50%;background:#fff;color:var(--purple);font:800 1.2rem Nunito,sans-serif;cursor:pointer;box-shadow:0 2px 6px rgba(106,69,214,.2)}
+.qty button:hover{background:var(--purple);color:#fff}
+.qty span{min-width:30px;text-align:center;font-weight:800;color:var(--navy)}
+.qty.sm{margin-top:6px}.qty.sm button{width:28px;height:28px;font-size:1rem}
+.item .rm{font-size:.85rem}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,30px);background:var(--navy);color:#fff;padding:10px 20px;border-radius:999px;font-weight:800;opacity:0;pointer-events:none;z-index:70;transition:opacity .25s,transform .25s;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.btn[disabled]{cursor:not-allowed}
+
+/* ---- animation ---- */
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes bob{50%{transform:translateY(-9px)}}
+@keyframes pop{40%{transform:scale(1.5)}100%{transform:scale(1)}}
+@keyframes pulse{50%{box-shadow:0 0 0 10px rgba(106,69,214,0)}0%{box-shadow:0 0 0 0 rgba(106,69,214,.45)}}
+.hero-text>*{animation:rise .6s both}
+.hero-text h1{animation-delay:.05s}.hero-text .swoosh{animation-delay:.2s}
+.hero-text>p{animation-delay:.3s}.hero-text .btn{animation-delay:.4s}.hero-text .script{animation-delay:.5s}
+.swoosh path{stroke-dasharray:360;stroke-dashoffset:360;animation:draw .9s .35s ease forwards}
+.kids img{animation:bob 4.5s ease-in-out infinite}
+.kids img+img{animation-delay:-2.2s}
+.trust li{animation:rise .6s .6s both}
+.book{animation:rise .5s both;animation-delay:calc(var(--i)*45ms);transition:transform .25s,box-shadow .25s}
+.book:hover{transform:translateY(-7px);box-shadow:0 16px 30px rgba(106,69,214,.22)}
+.cover span{display:inline-block;transition:transform .3s}
+.book:hover .cover span{transform:scale(1.2) rotate(-6deg)}
+.add{transition:transform .15s,background .2s}.add:active{transform:scale(.92)}
+.btn.primary:not(:disabled){animation:pulse 2.4s infinite}
+.cart-btn b.bump{display:inline-block;animation:pop .45s}
+.qty span{display:inline-block}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .swoosh path{stroke-dashoffset:0}
+}
