@@ -24,7 +24,7 @@ export default{
       body:JSON.stringify({data:{attributes:{
         line_items:lines.map(i=>({name:BOOKS[i.id][0],amount:BOOKS[i.id][1]*100,currency:"PHP",quantity:Math.floor(i.qty)})),
         payment_method_types:[method],
-        billing:{name,email,phone:mobile},
+        billing:{name,email,phone:String(mobile||"").replace(/^0/,"+63")},
         reference_number:ref,
         send_email_receipt:true,
         success_url:SITE+"/checkout.html?paid=1&ref="+encodeURIComponent(ref),
