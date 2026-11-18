@@ -15,13 +15,14 @@ export default{
     if(req.method==="OPTIONS")return new Response(null,{headers:CORS});
     if(req.method!=="POST")return new Response("Method not allowed",{status:405,headers:CORS});
     const {items,name,email,mobile,method,ref}=await req.json();
-    const ids=[...new Set(items||[])].filter(i=>BOOKS[i]); // prices come from the server, never the browser
-    if(!ids.length||!["gcash","paymaya"].includes(method))return new Response("Bad request",{status:400,headers:CORS});
+    // items: [{id, qty}]. Prices come from the server, never the browser.
+    const lines=(items||[]).filter(i=>BOOKS[i.id]&&i.qty>=1&&i.qty<=10);
+    if(!lines.length||!["gcash","paymaya"].includes(method))return new Response("Bad request",{status:400,headers:CORS});
     const r=await fetch("https://api.paymongo.com/v2/checkout_sessions",{
       method:"POST",
       headers:{"Content-Type":"application/json","Authorization":"Basic "+btoa(env.PAYMONGO_SECRET+":")},
       body:JSON.stringify({data:{attributes:{
-        line_items:ids.map(i=>({name:BOOKS[i][0],amount:BOOKS[i][1]*100,currency:"PHP",quantity:1})),
+        line_items:lines.map(i=>({name:BOOKS[i.id][0],amount:BOOKS[i.id][1]*100,currency:"PHP",quantity:Math.floor(i.qty)})),
         payment_method_types:[method],
         billing:{name,email,phone:mobile},
         reference_number:ref,
