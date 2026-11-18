@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payment – Learniverse</title>
+<link rel="icon" type="image/png" href="LOOGO.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="store.css">
+<link rel="stylesheet" href="checkout.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="nav-pill">
+    <a href="store.html" class="brand">
+      <img src="LOOGO.png" alt="Learniverse logo" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'📖'}))">
+      <span><strong>Learniverse</strong><small>Read • Learn • Grow</small></span>
+    </a>
+    <nav class="tabs" aria-label="Main Pages">
+      <a href="store.html">Books</a>
+      <a href="about-learniverse.html">💡 About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="co" id="co">
+  <h1>Payment</h1>
+  <div class="co-grid" id="grid">
+    <form class="panel" id="form" novalidate>
+      <h2>Your details</h2>
+      <label class="field">Full name<input name="name" required autocomplete="name"></label>
+      <label class="field">Email for your books<input name="email" type="email" required autocomplete="email"></label>
+      <label class="field">Mobile number<input name="mobile" inputmode="numeric" placeholder="09XXXXXXXXX" required autocomplete="tel"><small>The number registered to your e-wallet.</small></label>
+      <fieldset class="pay">
+        <legend>Pay with</legend>
+        <label><input type="radio" name="pay" value="GCash" checked><span class="badge g">G</span>GCash</label>
+        <label><input type="radio" name="pay" value="Maya"><span class="badge m">M</span>Maya</label>
+      </fieldset>
+      <p class="err" id="err" role="alert" hidden></p>
+      <button class="btn primary" type="submit">Pay now</button>
+    </form>
+    <aside class="panel" aria-label="Order summary">
+      <h2>Order summary</h2>
+      <div id="sum"></div>
+      <div class="sum-total"><span>Total</span><span id="total">₱0</span></div>
+    </aside>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <span class="foot-book">📖</span>
+  <p>
+    <a href="about-learniverse.html">About Learniverse</a>
+    <a href="reviews.html">Customer Reviews</a>
+    <a href="terms.html">Terms &amp; Conditions</a>
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="refund.html">Refund Policy</a>
+  </p>
+  <p>© 2026 Learniverse. Inspiring Curiosity, Creativity, and Lifelong Learning. ♥</p>
+</footer>
+
+<script src="books.js"></script>
+<script>
+const cart=loadCart();
+const total=cart.reduce((s,id)=>s+BOOKS[id].price,0);
+function showEmpty(){
+  $("#co").innerHTML=`<div class="panel done-box"><h2>Your cart is empty</h2><p>Add a book first, then come back to pay.</p><a class="btn primary" href="store.html">Browse books</a></div>`;
+}
+if(!cart.length){showEmpty()}else{
+  $("#sum").innerHTML=cart.map(id=>`<div class="sum-item"><span>${BOOKS[id].title}</span><b>${peso(BOOKS[id].price)}</b></div>`).join("");
+  $("#total").textContent=peso(total);
+  $("#form").onsubmit=e=>{
+    e.preventDefault();
+    const f=new FormData(e.target),err=$("#err");
+    const name=f.get("name").trim(),email=f.get("email").trim(),mobile=f.get("mobile").replace(/[\s-]/g,"");
+    let msg="";
+    if(!name)msg="Enter your full name.";
+    else if(!/^\S+@\S+\.\S+$/.test(email))msg="Enter a valid email address.";
+    else if(!/^(09|\+639)\d{9}$/.test(mobile))msg="Enter a Philippine mobile number, like 09XXXXXXXXX.";
+    err.hidden=!msg;err.textContent=msg;
+    if(msg)return;
+    const pay=f.get("pay"),ref="LV-"+Date.now().toString(36).toUpperCase().slice(-6);
+    saveCart([]);
+    $("#co").innerHTML=`<div class="panel done-box">
+      <h2>Order placed. Thank you!</h2>
+      <p>Order <b>${ref}</b> · ${peso(total)} via <b>${pay}</b></p>
+      <div class="how">Your digital books will be sent to <b>${email.replace(/[<>&]/g,"")}</b> once your ${pay} payment is confirmed.</div>
+      <p><small>Demo only: no payment was taken. Real ${pay} payments need a payment provider such as PayMongo or Xendit.</small></p>
+      <a class="btn primary" href="store.html">Keep browsing</a></div>`;
+  };
+}
+</script>
+</body>
+</html>
