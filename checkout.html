@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Payment – Learniverse</title>
+<title>Check out – Learniverse</title>
 <link rel="icon" type="image/png" href="LOOGO.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="store.css">
 <link rel="stylesheet" href="checkout.css">
 </head>
-<body>
+<body class="has-bar">
 <header class="topbar">
   <div class="nav-pill">
     <a href="store.html" class="brand">
@@ -25,73 +25,106 @@
 </header>
 
 <main class="co" id="co">
-  <h1>Payment</h1>
-  <div class="co-grid" id="grid">
-    <form class="panel" id="form" novalidate>
-      <h2>Your details</h2>
-      <label class="field">Full name<input name="name" required autocomplete="name"></label>
-      <label class="field">Email for your books<input name="email" type="email" required autocomplete="email"></label>
-      <label class="field">Mobile number<input name="mobile" inputmode="numeric" placeholder="09XXXXXXXXX" required autocomplete="tel"><small>The number registered to your e-wallet.</small></label>
-      <fieldset class="pay">
-        <legend>Pay with</legend>
-        <label><input type="radio" name="pay" value="GCash" checked><span class="badge g">G</span>GCash</label>
-        <label><input type="radio" name="pay" value="Maya"><span class="badge m">M</span>Maya</label>
-      </fieldset>
-      <p class="err" id="err" role="alert" hidden></p>
-      <button class="btn primary" type="submit" id="payBtn">Check out and pay</button>
-    </form>
-    <aside class="panel" aria-label="Order summary">
-      <h2>Order summary</h2>
-      <div id="sum"></div>
-      <div class="sum-total"><span>Total</span><span id="total">₱0</span></div>
-    </aside>
-  </div>
+  <h1>Check out</h1>
+  <section class="panel">
+    <h2>Your details</h2>
+    <label class="field">Full name<input id="name" autocomplete="name"></label>
+    <label class="field">Email for your books<input id="email" type="email" autocomplete="email"></label>
+    <label class="field">Mobile number<input id="mobile" inputmode="numeric" placeholder="09XXXXXXXXX" autocomplete="tel"><small>The number registered to your e-wallet.</small></label>
+    <p class="err" id="err" role="alert" hidden></p>
+  </section>
+  <section class="panel">
+    <h2>Your books</h2>
+    <div id="items"></div>
+  </section>
+  <section class="panel">
+    <h2>Order summary</h2>
+    <div class="sum-row"><span>Subtotal</span><span id="sub">₱0</span></div>
+    <div class="sum-row"><span>Delivery</span><span>Digital, by email</span></div>
+    <div class="sum-row t"><span>Total</span><span id="tot2">₱0</span></div>
+  </section>
+  <section class="panel" id="paySec" hidden>
+    <h2>Payment method</h2>
+    <div class="pm">
+      <label class="opt"><input type="radio" name="pm" value="GCash"><span class="badge g">G</span>GCash</label>
+      <label class="opt"><input type="radio" name="pm" value="Maya"><span class="badge m">M</span>Maya</label>
+    </div>
+  </section>
 </main>
 
-<footer class="site-footer">
-  <span class="foot-book">📖</span>
-  <p>
-    <a href="about-learniverse.html">About Learniverse</a>
-    <a href="reviews.html">Customer Reviews</a>
-    <a href="terms.html">Terms &amp; Conditions</a>
-    <a href="privacy.html">Privacy Policy</a>
-    <a href="refund.html">Refund Policy</a>
-  </p>
-  <p>© 2026 Learniverse. Inspiring Curiosity, Creativity, and Lifelong Learning. ♥</p>
-</footer>
+<div class="bar" id="bar">
+  <div class="tt"><small>Total</small><b id="barTot">₱0</b></div>
+  <button class="btn primary" id="main">Place order</button>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="st">
+  <div class="sh"><h2 id="st">Payment method</h2><button id="sx" aria-label="Close">×</button></div>
+  <div class="pm">
+    <label class="opt"><input type="radio" name="sp" value="GCash" checked><span class="badge g">G</span>GCash</label>
+    <label class="opt"><input type="radio" name="sp" value="Maya"><span class="badge m">M</span>Maya</label>
+  </div>
+  <button class="btn primary" id="cont">Continue</button>
+</div>
 
 <script src="config.js"></script>
 <script src="books.js"></script>
 <script>
-const cart=loadCart(),ids=Object.keys(cart),total=cartTotal(cart);
+let cart=loadCart(),method=null,details=null;
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const params=new URLSearchParams(location.search);
-function box(inner){$("#co").innerHTML=`<div class="panel done-box">${inner}</div>`}
+const total=()=>selTotal(cart);
+function box(inner){
+  const b=$("#bar");if(b)b.remove();document.body.classList.remove("has-bar");
+  $("#co").innerHTML=`<div class="panel done-box">${inner}</div>`;
+}
+function emptyState(){box(`<h2>Nothing to check out</h2><p>Tick the books you want in your cart first.</p><a class="btn primary" href="cart.html">Go to cart</a>`)}
 function thanks(ref){
-  saveCart({});
+  try{JSON.parse(localStorage.getItem("lv-pending")||"[]").forEach(i=>delete cart[i]);saveCart(cart);localStorage.removeItem("lv-pending")}catch(e){}
   box(`<h2>Thank you!</h2><p>Order <b>${esc(ref)}</b> is received.</p>
   <div class="how">Your digital books will be emailed to you once your payment is confirmed.</div>
   <a class="btn primary" href="store.html">Keep browsing</a>`);
 }
+function drawItems(){
+  const ids=selIds(cart);
+  if(!ids.length){emptyState();return}
+  $("#items").innerHTML=ids.map(id=>{
+    const b=BOOKS[id],[c,t,e]=AREAS[b.area];
+    return `<div class="line"><span class="mini" style="--t:${t}">${e}</span>
+      <div class="ln"><b>${b.title}</b><small>${b.age}</small><span class="price">${peso(b.price)}</span></div>
+      <div class="qty"><button data-act="dec" data-id="${id}" aria-label="Remove one">−</button><span>${cart[id]}</span><button data-act="inc" data-id="${id}" aria-label="Add one">+</button></div></div>`}).join("");
+  $("#sub").textContent=$("#tot2").textContent=$("#barTot").textContent=peso(total());
+}
+function readDetails(){
+  const name=$("#name").value.trim(),email=$("#email").value.trim(),mobile=$("#mobile").value.replace(/[\s-]/g,"");
+  let msg="";
+  if(!name)msg="Enter your full name.";
+  else if(!/^\S+@\S+\.\S+$/.test(email))msg="Enter a valid email address.";
+  else if(!/^(09|\+639)\d{9}$/.test(mobile))msg="Enter a Philippine mobile number, like 09XXXXXXXXX.";
+  const err=$("#err");err.hidden=!msg;err.textContent=msg;
+  if(msg){err.scrollIntoView({block:"center",behavior:"smooth"});return null}
+  return {name,email,mobile};
+}
+function openSheet(o){$("#sheet").classList.toggle("open",o);$("#scrim").classList.toggle("show",o)}
 function manual(o){
-  const w=o.method==="GCash"?CONFIG.GCASH:CONFIG.MAYA;
-  box(`<h2>Send ${peso(total)} with ${o.method}</h2>
+  const w=o.method==="GCash"?CONFIG.GCASH:CONFIG.MAYA,ids=selIds(cart);
+  box(`<h2>Send ${peso(total())} with ${o.method}</h2>
   <p>Open the <b>${o.method}</b> app, scan this QR code, type the exact amount, and put <b>${o.ref}</b> in the message.</p>
   <div class="how"><img class="qr" src="${w.qr}" alt="${o.method} QR code" onerror="this.style.display='none'">
   <b>${esc(w.number)}</b><br>${esc(w.name)}</div>
-  <form id="paid" class="paid"><label class="field">${o.method} reference number<input name="txn" required></label>
+  <div class="paid"><label class="field">${o.method} reference number<input id="txn"></label>
   <p class="err" id="err2" role="alert" hidden></p>
-  <button class="btn primary" type="submit">I have paid</button></form>`);
-  $("#paid").onsubmit=async e=>{
-    e.preventDefault();
-    const txn=new FormData(e.target).get("txn").trim();
-    const order={name:o.name,email:o.email,mobile:o.mobile,method:o.method,ref:o.ref,total:peso(total),txn,
+  <button class="btn primary" id="paidBtn">I have paid</button></div>`);
+  $("#paidBtn").onclick=async()=>{
+    const txn=$("#txn").value.trim(),err=$("#err2");
+    if(!txn){err.hidden=false;err.textContent="Enter the reference number from your "+o.method+" receipt.";return}
+    const order={name:o.name,email:o.email,mobile:o.mobile,method:o.method,ref:o.ref,total:peso(total()),txn,
       books:ids.map(i=>BOOKS[i].title+" x"+cart[i]).join(", ")};
     if(CONFIG.FORM_ENDPOINT){
       try{
         const r=await fetch(CONFIG.FORM_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify(order)});
         if(!r.ok)throw 0;
-      }catch(x){$("#err2").hidden=false;$("#err2").textContent="Could not send your order. Please try again.";return}
+      }catch(x){err.hidden=false;err.textContent="Could not send your order. Please try again.";return}
     }else{
       const body=Object.entries(order).map(([k,v])=>k+": "+v).join("\n");
       location.href="mailto:"+CONFIG.OWNER_EMAIL+"?subject="+encodeURIComponent("Learniverse order "+o.ref)+"&body="+encodeURIComponent(body);
@@ -99,35 +132,47 @@ function manual(o){
     thanks(o.ref);
   };
 }
+async function linkToPay(){
+  const ref="LV-"+Date.now().toString(36).toUpperCase().slice(-6),ids=selIds(cart);
+  const o={...details,method,ref},btn=$("#main");
+  try{localStorage.setItem("lv-pending",JSON.stringify(ids))}catch(e){}
+  if(CONFIG.PAYMENT_API){
+    btn.disabled=true;btn.textContent="Opening "+method+"…";
+    try{
+      const r=await fetch(CONFIG.PAYMENT_API,{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({items:ids.map(i=>({id:+i,qty:cart[i]})),name:o.name,email:o.email,mobile:o.mobile,ref,method:method==="Maya"?"paymaya":"gcash"})});
+      const j=await r.json();
+      if(!j.url)throw 0;
+      location.href=j.url;
+    }catch(x){btn.disabled=false;btn.textContent="Link to pay";const err=$("#err");err.hidden=false;err.textContent="Could not open "+method+". Please try again."}
+  }else manual(o);
+}
 if(params.get("paid")){thanks(params.get("ref")||"")}
-else if(!ids.length){box(`<h2>Your cart is empty</h2><p>Add a book first, then come back to pay.</p><a class="btn primary" href="store.html">Browse books</a>`)}
+else if(!selIds(cart).length){emptyState()}
 else{
-  $("#sum").innerHTML=ids.map(id=>`<div class="sum-item"><span>${BOOKS[id].title} × ${cart[id]}</span><b>${peso(BOOKS[id].price*cart[id])}</b></div>`).join("")
-    +`<p class="edit"><a href="store.html">Change quantities</a></p>`;
-  $("#total").textContent=peso(total);
-  $("#form").onsubmit=async e=>{
-    e.preventDefault();
-    const f=new FormData(e.target),err=$("#err"),btn=$("#payBtn");
-    const name=f.get("name").trim(),email=f.get("email").trim(),mobile=f.get("mobile").replace(/[\s-]/g,"");
-    let msg="";
-    if(!name)msg="Enter your full name.";
-    else if(!/^\S+@\S+\.\S+$/.test(email))msg="Enter a valid email address.";
-    else if(!/^(09|\+639)\d{9}$/.test(mobile))msg="Enter a Philippine mobile number, like 09XXXXXXXXX.";
-    err.hidden=!msg;err.textContent=msg;
-    if(msg)return;
-    const method=f.get("pay"),ref="LV-"+Date.now().toString(36).toUpperCase().slice(-6);
-    const o={name,email,mobile,method,ref};
-    if(CONFIG.PAYMENT_API){
-      btn.disabled=true;btn.textContent="Opening "+method+"…";
-      try{
-        const r=await fetch(CONFIG.PAYMENT_API,{method:"POST",headers:{"Content-Type":"application/json"},
-          body:JSON.stringify({items:ids.map(i=>({id:+i,qty:cart[i]})),name,email,mobile,ref,method:method==="Maya"?"paymaya":"gcash"})});
-        const j=await r.json();
-        if(!j.url)throw 0;
-        location.href=j.url;
-      }catch(x){btn.disabled=false;btn.textContent="Check out and pay";err.hidden=false;err.textContent="Could not open "+method+". Please try again."}
-    }else manual(o);
+  drawItems();
+  document.addEventListener("click",e=>{
+    const a=e.target.closest("[data-act]");
+    if(!a)return;
+    const id=a.dataset.id,n=Math.max(0,Math.min(10,cart[id]+(a.dataset.act==="inc"?1:-1)));
+    if(n)cart[id]=n;else delete cart[id];
+    saveCart(cart);drawItems();
+  });
+  $("#main").onclick=()=>{
+    details=readDetails();if(!details)return;
+    if(!method){openSheet(true);return}
+    linkToPay();
   };
+  $("#cont").onclick=()=>{
+    method=document.querySelector('input[name=sp]:checked').value;
+    document.querySelector(`input[name=pm][value=${method}]`).checked=true;
+    $("#paySec").hidden=false;$("#main").textContent="Link to pay";
+    openSheet(false);
+    $("#paySec").scrollIntoView({block:"center",behavior:"smooth"});
+  };
+  document.querySelectorAll("input[name=pm]").forEach(r=>r.onchange=()=>{method=r.value});
+  $("#sx").onclick=$("#scrim").onclick=()=>openSheet(false);
+  document.addEventListener("keydown",e=>{if(e.key==="Escape")openSheet(false)});
 }
 </script>
 <script src="back.js"></script>
