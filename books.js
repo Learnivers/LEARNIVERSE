@@ -26,5 +26,8 @@ const BOOKS=[
 
 const $=s=>document.querySelector(s);
 const peso=n=>"₱"+n.toLocaleString("en-PH");
-function loadCart(){try{return JSON.parse(localStorage.getItem("lv-cart")||"[]").filter(i=>BOOKS[i])}catch(e){return[]}}
-function saveCart(c){try{localStorage.setItem("lv-cart",JSON.stringify(c))}catch(e){}}
+// Cart is an object { bookId: quantity }
+function loadCart(){try{const c=JSON.parse(localStorage.getItem("lv-cart2")||"{}"),o={};for(const k in c){if(BOOKS[k]&&c[k]>0)o[k]=Math.min(10,c[k]|0)}return o}catch(e){return{}}}
+function saveCart(c){try{localStorage.setItem("lv-cart2",JSON.stringify(c))}catch(e){}}
+const cartCount=c=>Object.values(c).reduce((a,n)=>a+n,0);
+const cartTotal=c=>Object.entries(c).reduce((s,[id,n])=>s+BOOKS[id].price*n,0);
