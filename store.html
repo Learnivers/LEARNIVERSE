@@ -8,7 +8,7 @@
 <link rel="icon" type="image/png" href="LOOGO.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="pages.css">
+<link rel="stylesheet" href="store.css">
 </head>
 <body>
 
@@ -64,62 +64,13 @@
   <div class="items" id="items"></div>
   <div class="dfoot">
     <div class="total"><span>Total</span><span id="total">₱0</span></div>
-    <button class="btn primary" id="checkout" disabled>Check out</button>
+    <button class="btn primary" id="checkout" disabled>Check out and pay</button>
   </div>
 </aside>
 
-<dialog id="dlg">
-  <form method="dialog" id="form">
-    <h2>Check out</h2>
-    <label>Full name<input name="name" required autocomplete="name"></label>
-    <label>Email for your books<input name="email" type="email" required autocomplete="email"></label>
-    <label>Payment method
-      <select name="pay"><option>GCash</option><option>Maya</option><option>Credit or debit card</option></select>
-    </label>
-    <p class="note">This is a demo checkout. No payment is taken yet.</p>
-    <button class="btn primary" type="submit">Place order</button>
-    <button class="btn soft" type="button" id="cancel">Cancel</button>
-  </form>
-  <div class="ok" id="ok" hidden>
-    <h2>Thank you!</h2>
-    <p>Your order is placed. We will send your digital books to <b id="mail"></b>.</p>
-    <button class="btn primary" id="done">Keep browsing</button>
-  </div>
-</dialog>
-
+<script src="books.js"></script>
 <script>
-const AREAS={
-  "Language & Reading":["#ff7eb6","#ffe3f0","📚"],
-  "Mathematics & Logic":["#ffb703","#fff0c9","🔢"],
-  "Science & Discovery":["#4cb5f5","#d9efff","🔬"],
-  "Arts & Creativity":["#9b5de5","#eadcfb","🎨"],
-  "Life Skills & Values":["#3ddc97","#d6f7e8","💛"]
-};
-// Edit this list to add, remove or rename your books and prices (₱).
-const BOOKS=[
-  ["My First Alphabet Book","Language & Reading",149,"Ages 3–5"],
-  ["Word Builders: Vocabulary Fun","Language & Reading",179,"Ages 5–7"],
-  ["Matuto ng Filipino","Language & Reading",169,"Ages 6–9"],
-  ["Counting Adventures","Mathematics & Logic",149,"Ages 3–5"],
-  ["Shapes, Puzzles & Patterns","Mathematics & Logic",179,"Ages 5–8"],
-  ["Money Smarts for Kids","Mathematics & Logic",189,"Ages 7–10"],
-  ["Amazing Animals","Science & Discovery",169,"Ages 4–7"],
-  ["Journey to Space","Science & Discovery",189,"Ages 6–10"],
-  ["Dinosaur Discoveries","Science & Discovery",179,"Ages 5–9"],
-  ["Draw Along with Me","Arts & Creativity",159,"Ages 4–8"],
-  ["Little Musicians","Arts & Creativity",159,"Ages 5–9"],
-  ["Kids in the Kitchen","Arts & Creativity",179,"Ages 6–10"],
-  ["Good Manners Every Day","Life Skills & Values",139,"Ages 3–6"],
-  ["Understanding My Feelings","Life Skills & Values",169,"Ages 5–8"],
-  ["Community Helpers","Life Skills & Values",149,"Ages 4–7"]
-].map((b,i)=>({id:i,title:b[0],area:b[1],price:b[2],age:b[3]}));
-
-const $=s=>document.querySelector(s);
-const peso=n=>"₱"+n.toLocaleString("en-PH");
-let cart=[],filter="All";
-try{cart=JSON.parse(localStorage.getItem("lv-cart")||"[]").filter(i=>BOOKS[i])}catch(e){cart=[]}
-const save=()=>{try{localStorage.setItem("lv-cart",JSON.stringify(cart))}catch(e){}};
-
+let cart=loadCart(),filter="All";
 function drawFilters(){
   $("#filters").innerHTML=["All",...Object.keys(AREAS)].map(a=>
     `<button aria-pressed="${a===filter}" data-a="${a}">${a}</button>`).join("");
@@ -145,25 +96,15 @@ function drawCart(){
   $("#total").textContent=peso(cart.reduce((s,id)=>s+BOOKS[id].price,0));
   $("#checkout").disabled=!cart.length;
 }
-function render(){drawBooks();drawCart();save()}
+function render(){drawBooks();drawCart();saveCart(cart)}
 function openCart(o){$("#drawer").classList.toggle("open",o);$("#scrim").classList.toggle("show",o)}
-
 $("#filters").onclick=e=>{const a=e.target.dataset.a;if(a){filter=a;drawFilters();drawBooks()}};
-$("#grid").onclick=e=>{const id=e.target.dataset.id;if(id!==undefined){cart.push(+id);render()}};
+$("#grid").onclick=e=>{const id=e.target.dataset.id;if(id!==undefined){cart.push(+id);render();openCart(true)}};
 $("#items").onclick=e=>{const id=e.target.dataset.rm;if(id!==undefined){cart=cart.filter(x=>x!==+id);render()}};
 $("#openCart").onclick=()=>openCart(true);
 $("#closeCart").onclick=$("#scrim").onclick=()=>openCart(false);
-$("#checkout").onclick=()=>{$("#form").hidden=false;$("#ok").hidden=true;$("#dlg").showModal()};
-$("#cancel").onclick=()=>$("#dlg").close();
-$("#form").onsubmit=e=>{
-  e.preventDefault();
-  $("#mail").textContent=new FormData(e.target).get("email");
-  $("#form").hidden=true;$("#ok").hidden=false;
-  cart=[];render();
-};
-$("#done").onclick=()=>{$("#dlg").close();openCart(false)};
+$("#checkout").onclick=()=>{saveCart(cart);location.href="checkout.html"};
 document.addEventListener("keydown",e=>{if(e.key==="Escape")openCart(false)});
-
 drawFilters();render();
 </script>
 </body>
