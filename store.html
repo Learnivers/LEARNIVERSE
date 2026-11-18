@@ -146,7 +146,7 @@ document.addEventListener("click",e=>{
   if(a){
     const id=+a.dataset.id,inGrid=!!a.closest(".act");
     change(id,a.dataset.act==="inc"?1:-1);
-    if(inGrid){const f=document.querySelector(`.act[data-book="${id}"] button[data-act="${cart[id]?"inc":"inc"}"]`);if(f)f.focus()}
+    if(inGrid){const f=document.querySelector(`.act[data-book="${id}"] button[data-act="inc"]`);if(f)f.focus()}
     return;
   }
   const r=e.target.closest("[data-rm]");
