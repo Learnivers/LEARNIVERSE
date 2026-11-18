@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Learning Topics – Learniverse</title>
+  <meta name="description" content="Explore what children can learn from Kindergarten to Grade 10, organized by subject and grade level.">
+  <link rel="icon" type="image/png" href="LOOGO.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="pages.css">
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="nav-pill">
+      <a href="index.html" class="brand">
+        <img src="LOOGO.png" alt="Learniverse logo"
+             onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'fallback',textContent:'📖'}))">
+        <strong>Learniverse</strong>
+      </a>
+      <nav class="links" aria-label="Main"><a href="index.html">Profile</a><a href="about-learniverse.html">About</a><a href="topics.html" class="active">Learn</a><a href="reviews.html">Reviews</a><a href="terms.html">Terms</a><a href="privacy.html">Privacy</a><a href="refund.html">Refund</a></nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <p class="eyebrow">Learn</p>
+      <h1>Learning Topics by Grade</h1>
+      <svg class="swoosh" viewBox="0 0 340 20" aria-hidden="true"><path d="M6 13 C 90 2, 220 4, 334 10" stroke="#ffc233" stroke-width="5" fill="none" stroke-linecap="round"/></svg>
+      <p class="lead">Explore what children can learn from Kindergarten to Grade 10, organized by subject and grade level.</p>
+      
+    </section>
+
+    <section class="card">
+      <h2>Browse by Subject &amp; Grade</h2>
+      <p>Pick a subject, then a grade level. Tap a topic to mark it as learned and track your progress.</p>
+      <input type="text" id="tsearch" placeholder="Search any topic (e.g. fractions, alamat, web design)..." aria-label="Search topics">
+      <div class="pills" id="subjects" aria-label="Subjects"></div>
+      <div class="pills small" id="grades" aria-label="Grade levels"></div>
+      <div class="prog">
+        <span id="progText"></span>
+        <div class="track"><div class="fillbar" id="progBar"></div></div>
+      </div>
+      <div id="topics"></div>
+    </section>
+
+    <section class="card">
+      <h2>What Every Lesson Includes</h2>
+      <p>Each topic is organized by grade, subject, and individual lesson so learners can easily find the right materials.</p>
+      <div class="grid lessons">
+        <div class="tile" style="--c:#ff7eb6"><span class="ico">1</span><h3>Introduction</h3><p>What is the topic?</p></div>
+        <div class="tile" style="--c:#ffb703"><span class="ico">2</span><h3>Learning Objectives</h3><p>What will students learn?</p></div>
+        <div class="tile" style="--c:#4cb5f5"><span class="ico">3</span><h3>Lesson Explanation</h3><p>A complete discussion of the topic.</p></div>
+        <div class="tile" style="--c:#9b5de5"><span class="ico">4</span><h3>Examples</h3><p>Easy examples with explanations.</p></div>
+        <div class="tile" style="--c:#3ddc97"><span class="ico">5</span><h3>Illustrations</h3><p>Pictures and diagrams.</p></div>
+        <div class="tile" style="--c:#ff7eb6"><span class="ico">6</span><h3>Activities</h3><p>Interactive exercises.</p></div>
+        <div class="tile" style="--c:#ffb703"><span class="ico">7</span><h3>Practice Test</h3><p>Questions for students.</p></div>
+        <div class="tile" style="--c:#4cb5f5"><span class="ico">8</span><h3>Quiz</h3><p>Multiple-choice, identification, and true or false.</p></div>
+        <div class="tile" style="--c:#9b5de5"><span class="ico">9</span><h3>Answer Key</h3><p>Correct answers with explanations.</p></div>
+        <div class="tile" style="--c:#3ddc97"><span class="ico">10</span><h3>Learning Progress</h3><p>Track completed lessons and scores.</p></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Curriculum References</h2>
+      <p>Our topics follow the Philippine Department of Education (DepEd) curriculum. For the latest official guides, see the DepEd website at <a href="https://www.deped.gov.ph" target="_blank" rel="noopener">deped.gov.ph</a>.</p>
+      <div class="two">
+        <div class="box"><h3>Revised K to 10 Curriculum</h3><p>Official curriculum guides and MATATAG curriculum resources.</p></div>
+        <div class="box"><h3>MATATAG Curriculum Guides</h3><p>Kindergarten, English, Mathematics, Science, Filipino, Arts, GMRC, and other subjects.</p></div>
+        <div class="box"><h3>Kindergarten Curriculum Guide</h3><p>Early childhood learning standards and competencies.</p></div>
+        <div class="box"><h3>K to 12 Curriculum Guides</h3><p>English, Filipino, Mathematics, Science, Arts, Music, Health, PE, and Araling Panlipunan.</p></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="foot-links">
+      <a href="about-learniverse.html">About Learniverse</a>
+      <a href="topics.html">Learning Topics</a>
+      <a href="reviews.html">Customer Reviews</a>
+      <a href="terms.html">Terms &amp; Conditions</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="refund.html">Refund Policy</a>
+    </div>
+    <p>© 2026 Learniverse. Inspiring Curiosity, Creativity, and Lifelong Learning. ♥</p>
+  </footer>
+  <script src="topics.js"></script>
+</body>
+</html>
