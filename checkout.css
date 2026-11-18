@@ -24,3 +24,6 @@
 .done-box h2{font-size:1.8rem;color:var(--navy);margin-bottom:8px}
 .done-box .btn{width:auto;margin-top:14px}
 @media(max-width:800px){.co-grid{grid-template-columns:1fr}.pay{grid-template-columns:1fr}}
+.qr{display:block;width:200px;max-width:100%;margin:0 auto 10px;border-radius:12px}
+.paid{max-width:360px;margin:16px auto 0;text-align:left}
+.btn.primary:disabled{opacity:.6;cursor:wait}
