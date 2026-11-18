@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shopping cart – Learniverse</title>
+<link rel="icon" type="image/png" href="LOOGO.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="store.css">
+<link rel="stylesheet" href="checkout.css">
+</head>
+<body class="has-bar">
+<header class="topbar">
+  <div class="nav-pill">
+    <a href="store.html" class="brand">
+      <img src="LOOGO.png" alt="Learniverse logo" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'📖'}))">
+      <span><strong>Learniverse</strong><small>Read • Learn • Grow</small></span>
+    </a>
+    <nav class="tabs" aria-label="Main Pages">
+      <a href="store.html">Books</a>
+      <a href="about-learniverse.html">💡 About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="co" id="co">
+  <h1>Shopping cart <small id="n"></small></h1>
+  <div class="panel" id="list"></div>
+</main>
+
+<div class="bar" id="bar">
+  <label class="all"><input type="checkbox" id="all"> All</label>
+  <div class="tt"><small>Total</small><b id="tot">₱0</b></div>
+  <button class="btn primary" id="go" disabled>Check out (0)</button>
+</div>
+
+<script src="books.js"></script>
+<script>
+let cart=loadCart(),off=loadOff();
+function render(){
+  const ids=Object.keys(cart);
+  $("#n").textContent=ids.length?"("+cartCount(cart)+")":"";
+  $("#list").innerHTML=ids.length?ids.map(id=>{
+    const b=BOOKS[id],[c,t,e]=AREAS[b.area],n=cart[id],on=!off.includes(+id);
+    return `<div class="line"><input type="checkbox" data-sel="${id}" ${on?"checked":""} aria-label="Select ${b.title}">
+      <span class="mini" style="--t:${t}">${e}</span>
+      <div class="ln"><b>${b.title}</b><small>${b.area} · ${b.age}</small><span class="price">${peso(b.price)}</span>
+      <button class="rm" data-rm="${id}">Remove</button></div>
+      <div class="qty"><button data-act="dec" data-id="${id}" aria-label="Remove one">−</button><span>${n}</span><button data-act="inc" data-id="${id}" aria-label="Add one">+</button></div></div>`}).join("")
+    :`<div class="empty-box"><h2>Your cart is empty</h2><p>Add a book to get started.</p><a class="btn primary" href="store.html">Browse books</a></div>`;
+  const k=selCount(cart);
+  $("#tot").textContent=peso(selTotal(cart));
+  $("#go").textContent="Check out ("+k+")";
+  $("#go").disabled=!k;
+  $("#all").checked=ids.length>0&&ids.every(i=>!off.includes(+i));
+  $("#all").disabled=!ids.length;
+}
+document.addEventListener("click",e=>{
+  const a=e.target.closest("[data-act]");
+  if(a){
+    const id=a.dataset.id,n=Math.max(0,Math.min(10,cart[id]+(a.dataset.act==="inc"?1:-1)));
+    if(n)cart[id]=n;else delete cart[id];
+    saveCart(cart);render();return;
+  }
+  const r=e.target.closest("[data-rm]");
+  if(r){delete cart[r.dataset.rm];saveCart(cart);render()}
+});
+document.addEventListener("change",e=>{
+  const s=e.target.dataset.sel;
+  if(s!==undefined){const id=+s;off=e.target.checked?off.filter(x=>x!==id):[...off,id];saveOff(off);render()}
+  if(e.target.id==="all"){off=e.target.checked?[]:Object.keys(cart).map(Number);saveOff(off);render()}
+});
+$("#go").onclick=()=>{$("#go").textContent="Opening…";location.href="checkout.html"};
+window.addEventListener("pageshow",render);
+render();
+</script>
+<script src="back.js"></script>
+</body>
+</html>
