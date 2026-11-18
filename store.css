@@ -116,3 +116,4 @@ dialog input,dialog select{padding:10px 12px;border:2px solid var(--line);border
   *,*::before,*::after{animation:none!important;transition:none!important}
   .swoosh path{stroke-dashoffset:0}
 }
+.btn.off{opacity:.5;pointer-events:none}.dfoot .btn{text-align:center}
