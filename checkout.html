@@ -79,11 +79,34 @@ function box(inner){
   $("#co").innerHTML=`<div class="panel done-box">${inner}</div>`;
 }
 function emptyState(){box(`<h2>Nothing to check out</h2><p>Tick the books you want in your cart first.</p><a class="btn primary" href="cart.html">Go to cart</a>`)}
-function thanks(ref){
+function clearPaid(){
   try{JSON.parse(localStorage.getItem("lv-pending")||"[]").forEach(i=>delete cart[i]);saveCart(cart);localStorage.removeItem("lv-pending")}catch(e){}
-  box(`<h2>Thank you!</h2><p>Order <b>${esc(ref)}</b> is received.</p>
-  <div class="how">Your digital books will be emailed to you once your payment is confirmed.</div>
+}
+function mailHref(o){
+  const body=Object.entries(o).filter(([k])=>k!=="lines").map(([k,v])=>k+": "+v).join("\n");
+  return "mailto:"+CONFIG.OWNER_EMAIL+"?subject="+encodeURIComponent("Learniverse order "+o.ref)+"&body="+encodeURIComponent(body);
+}
+function returned(ref){
+  clearPaid();
+  box(`<h2>Back from payment</h2><p>Order <b>${esc(ref)}</b></p>
+  <div class="how">If your payment went through, you will get a receipt by email and your digital books once the payment is confirmed. If you did not finish paying, your books are still in your cart.</div>
   <a class="btn primary" href="store.html">Keep browsing</a>`);
+}
+function receipt(o,sent){
+  clearPaid();
+  box(`<h2>Order received</h2>
+  <p>Thank you, ${esc(o.name)}! Order <b>${esc(o.ref)}</b> is waiting for payment check.</p>
+  <div class="rcpt">
+    ${o.lines.map(l=>`<div class="sum-row"><span>${esc(l.t)} × ${l.q}</span><span>${peso(l.p*l.q)}</span></div>`).join("")}
+    <div class="sum-row t"><span>Total</span><span>${esc(o.total)}</span></div>
+    <div class="sum-row"><span>Paid with</span><span>${esc(o.method)}</span></div>
+    <div class="sum-row"><span>${esc(o.method)} reference no.</span><span>${esc(o.txn)}</span></div>
+    <div class="sum-row"><span>Date</span><span>${esc(o.date)}</span></div>
+  </div>
+  <div class="how">We will check your ${esc(o.method)} payment, then email your digital books to <b>${esc(o.email)}</b>.</div>
+  ${sent?`<p class="okmsg">✔ Your order was sent to the shop.</p>`
+        :`<a class="btn primary" href="${mailHref(o)}">Send this order to the shop</a><p class="small">Tap the button and press send in your email app so the shop can see your order.</p>`}
+  <div class="acts"><button class="btn soft" onclick="window.print()">Print receipt</button><a class="btn soft" href="store.html">Keep browsing</a></div>`);
 }
 function drawItems(){
   const ids=selIds(cart);
@@ -106,30 +129,57 @@ function readDetails(){
   return {name,email,mobile};
 }
 function openSheet(o){$("#sheet").classList.toggle("open",o);$("#scrim").classList.toggle("show",o)}
+function copyText(t,btn){
+  const old=btn.textContent;
+  (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>{btn.textContent="Copied ✔"}).catch(()=>{btn.textContent="Copy failed"});
+  setTimeout(()=>{btn.textContent=old},1600);
+}
 function manual(o){
-  const w=o.method==="GCash"?CONFIG.GCASH:CONFIG.MAYA,ids=selIds(cart);
-  box(`<h2>Send ${peso(total())} with ${o.method}</h2>
-  <p>Open the <b>${o.method}</b> app, scan this QR code, type the exact amount, and put <b>${o.ref}</b> in the message.</p>
-  <div class="how"><img class="qr" src="${w.qr}" alt="${o.method} QR code" onerror="this.style.display='none'">
-  <b>${esc(w.number)}</b><br>${esc(w.name)}</div>
-  <div class="paid"><label class="field">${o.method} reference number<input id="txn"></label>
+  const w=o.method==="GCash"?CONFIG.GCASH:CONFIG.MAYA,ids=selIds(cart),amt=total();
+  const android=/Android/i.test(navigator.userAgent);
+  const gcashApp="intent://#Intent;package=com.globe.gcash.android;S.browser_fallback_url="+encodeURIComponent("https://play.google.com/store/apps/details?id=com.globe.gcash.android")+";end";
+  box(`<h2>Pay ${esc(o.method)}</h2>
+  <p class="amt">${peso(amt)}.00</p>
+  <p>Send exactly this amount to <b>${esc(w.name)}</b>.</p>
+  <div class="how">
+    <img class="qr" src="${w.qr}" alt="${o.method} QR code of ${esc(w.name)}" onerror="this.style.display='none';$('#qrfail').hidden=false">
+    <p class="small" id="qrfail" hidden>The QR image could not load. Send to the number below instead.</p>
+    <b>${esc(w.number)}</b><br>${esc(w.name)}
+    <div class="acts">
+      <a class="btn soft" href="${w.qr}" download="learniverse-${o.method.toLowerCase()}-qr.png">Save QR</a>
+      <button class="btn soft" id="cpNum">Copy number</button>
+      <button class="btn soft" id="cpAmt">Copy amount</button>
+    </div>
+  </div>
+  ${android&&o.method==="GCash"?`<a class="btn primary" href="${gcashApp}">Open GCash app</a>`:""}
+  <ol class="how2">
+    <li>Tap <b>Save QR</b> (or scan this QR from another device).</li>
+    <li>Open ${esc(o.method)}, choose <b>Scan QR</b>, and scan it or pick the saved image from your photos.</li>
+    <li>Type <b>${peso(amt)}</b> and send. Order code: <b>${esc(o.ref)}</b> (add it to the message if the app has one).</li>
+    <li>Copy the <b>reference number</b> from your receipt and enter it below.</li>
+  </ol>
+  <div class="paid"><label class="field">${esc(o.method)} reference number<input id="txn" autocomplete="off"></label>
   <p class="err" id="err2" role="alert" hidden></p>
   <button class="btn primary" id="paidBtn">I have paid</button></div>`);
+  $("#cpNum").onclick=e=>copyText(w.number.replace(/\s/g,""),e.target);
+  $("#cpAmt").onclick=e=>copyText(amt+".00",e.target);
   $("#paidBtn").onclick=async()=>{
     const txn=$("#txn").value.trim(),err=$("#err2");
-    if(!txn){err.hidden=false;err.textContent="Enter the reference number from your "+o.method+" receipt.";return}
-    const order={name:o.name,email:o.email,mobile:o.mobile,method:o.method,ref:o.ref,total:peso(total()),txn,
-      books:ids.map(i=>BOOKS[i].title+" x"+cart[i]).join(", ")};
+    if(!/^[A-Za-z0-9 -]{6,}$/.test(txn)){err.hidden=false;err.textContent="Enter the reference number from your "+o.method+" receipt.";return}
+    const order={name:o.name,email:o.email,mobile:o.mobile,method:o.method,ref:o.ref,total:peso(amt)+".00",txn,date:new Date().toLocaleString("en-PH"),
+      books:ids.map(i=>BOOKS[i].title+" x"+cart[i]).join(", "),
+      lines:ids.map(i=>({t:BOOKS[i].title,q:cart[i],p:BOOKS[i].price}))};
+    let sent=false;
     if(CONFIG.FORM_ENDPOINT){
+      $("#paidBtn").disabled=true;
       try{
-        const r=await fetch(CONFIG.FORM_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify(order)});
+        const {lines,...flat}=order;
+        const r=await fetch(CONFIG.FORM_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify(flat)});
         if(!r.ok)throw 0;
-      }catch(x){err.hidden=false;err.textContent="Could not send your order. Please try again.";return}
-    }else{
-      const body=Object.entries(order).map(([k,v])=>k+": "+v).join("\n");
-      location.href="mailto:"+CONFIG.OWNER_EMAIL+"?subject="+encodeURIComponent("Learniverse order "+o.ref)+"&body="+encodeURIComponent(body);
+        sent=true;
+      }catch(x){$("#paidBtn").disabled=false;err.hidden=false;err.textContent="Could not send your order. Check your internet and try again.";return}
     }
-    thanks(o.ref);
+    receipt(order,sent);
   };
 }
 async function linkToPay(){
@@ -147,7 +197,7 @@ async function linkToPay(){
     }catch(x){btn.disabled=false;btn.textContent="Link to pay";const err=$("#err");err.hidden=false;err.textContent="Could not open "+method+". Please try again."}
   }else manual(o);
 }
-if(params.get("paid")){thanks(params.get("ref")||"")}
+if(params.get("paid")){returned(params.get("ref")||"")}
 else if(!selIds(cart).length){emptyState()}
 else{
   drawItems();
