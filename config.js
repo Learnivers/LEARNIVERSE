@@ -1,13 +1,12 @@
-// Learniverse payment settings. Fill these in.
+// Learniverse payment settings.
 const CONFIG={
-  // A) AUTOMATIC PAYMENT (recommended): your deployed worker.js URL.
-  // Leave "" to use the manual option below.
+  // A) AUTOMATIC PAYMENT (optional): your deployed worker.js URL. Leave "" to use the QR payment below.
   PAYMENT_API:"",
 
-  // B) MANUAL PAYMENT: customers send money to your own accounts.
-  OWNER_EMAIL:"your.email@example.com",
-  GCASH:{number:"09XX XXX XXXX",name:"Your Name",qr:"gcash-qr.png"},
-  MAYA:{number:"09XX XXX XXXX",name:"Your Name",qr:"maya-qr.png"},
-  // Optional: a Formspree URL (https://formspree.io) to receive orders by email.
+  // B) QR PAYMENT: customers scan your QR and send the money to you.
+  OWNER_EMAIL:"your.email@example.com", // <-- change to the email where you want to receive orders
+  GCASH:{number:"0954 370 4361",name:"Leonilyn M. Lutero",qr:"gcash-qr.png"},
+  MAYA:{number:"0954 370 4361",name:"Leonilyn M. Lutero",qr:"maya-qr.png"},
+  // Optional: a Formspree URL (https://formspree.io) to receive orders by email without opening the customer's mail app.
   FORM_ENDPOINT:""
 };
