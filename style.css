@@ -545,3 +545,56 @@ h2 { font-size: 2.3rem; font-weight: 800; }
         padding: 12px 22px;
     }
 }
+.photo-stage {
+    position: relative;
+}
+
+.visit-learniverse-btn {
+    position: absolute;
+    top: 300px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    padding: 15px 30px;
+    min-width: 220px;
+
+    border: 3px solid white;
+    border-radius: 50px;
+
+    color: white;
+    text-decoration: none;
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+
+    background: linear-gradient(
+        120deg,
+        #7041e8,
+        #bd55dc,
+        #f36caa,
+        #ffad69
+    );
+
+    background-size: 300% 300%;
+    box-shadow: 0 8px 22px rgba(112, 65, 232, .35);
+
+    animation: visitGradient 5s ease infinite;
+    transition: .3s ease;
+    z-index: 10;
+}
+
+.visit-learniverse-btn:hover {
+    transform: translateX(-50%) scale(1.08);
+    box-shadow: 0 12px 28px rgba(112, 65, 232, .45);
+}
+
+@keyframes visitGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
