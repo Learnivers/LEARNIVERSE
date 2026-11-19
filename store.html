@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Learniverse Store – Digital Books for Children</title>
-<meta name="description" content="Buy digital educational books for children in five learning areas.">
+<meta name="description" content="Explore 10 learning subjects from Kindergarten to Grade 10 with Learniverse digital books.">
 <link rel="icon" type="image/png" href="LOOGO.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
@@ -30,7 +30,7 @@
   <div class="hero-text">
     <h1>Digital books that make learning fun</h1>
     <svg class="swoosh" viewBox="0 0 340 20" aria-hidden="true"><path d="M6 13 C 90 2, 220 4, 334 10" stroke="#ffc233" stroke-width="5" fill="none" stroke-linecap="round"/></svg>
-    <p>Educational books for children in five learning areas. Pick your books, pay with GCash or Maya, and read on any device.</p>
+ <p>Explore 10 exciting learning subjects from Kindergarten to Grade 10. Choose your favorite topics, discover new lessons, and enjoy learning with Learniverse!</p>
     <a class="btn primary" href="#books">Shop books</a>
     <p class="script">Let’s learn, explore, and grow together! ♥</p>
   </div>
@@ -46,21 +46,96 @@
   <li>🔄 Read on any device</li>
 </ul>
 
-<main id="books">
-  <h2>Our digital books</h2>
-  <div class="filters" id="filters" role="group" aria-label="Filter by learning area"></div>
-  <div class="tools">
-    <input type="search" id="search" placeholder="Search books" aria-label="Search books">
-    <select id="sort" aria-label="Sort books">
-      <option value="featured">Featured</option>
-      <option value="low">Price: low to high</option>
-      <option value="high">Price: high to low</option>
-      <option value="az">Title: A to Z</option>
-    </select>
-    <span class="shown" id="shown" aria-live="polite"></span>
+
+<!-- OUR BOOKS: 10 LEARNING SUBJECTS -->
+<section class="panel subjects-panel" id="subjects">
+  <h2>Explore Our Learning Subjects</h2>
+
+  <svg class="swoosh sm" viewBox="0 0 340 20" aria-hidden="true">
+    <path d="M6 13 C 90 2, 220 4, 334 10"
+      stroke="#ffc233" stroke-width="5" fill="none"
+      stroke-linecap="round"/>
+  </svg>
+
+  <p class="intro">
+    Learniverse offers 10 exciting subjects from Kindergarten to Grade 10.
+    Choose a subject and explore its learning topics!
+  </p>
+
+  <div class="subjects">
+
+    <a class="subject" href="topics.html?subject=0" style="--c:#ff7eb6">
+      <span class="badge">📚</span>
+      <h3>Language &amp; Reading</h3>
+      <p>Letters, phonics, grammar, writing, and literature.</p>
+      <span class="go">View topics <b>→</b></span>
+    </a>
+
+    <a class="subject" href="topics.html?subject=1" style="--c:#ffb703">
+      <span class="badge">🔢</span>
+      <h3>Mathematics &amp; Logic</h3>
+      <p>Numbers, fractions, algebra, geometry, and problem solving.</p>
+      <span class="go">View topics <b>→</b></span>
+    </a>
+
+    <a class="subject" href="topics.html?subject=2" style="--c:#4cb5f5">
+      <span class="badge">🔬</span>
+      <h3>Science &amp; Discovery</h3>
+      <p>Plants, animals, matter, energy, Earth, and space.</p>
+      <span class="go">View topics <b>→</b></span>
+    </a>
+
+    <a class="subject" href="topics.html?subject=3" style="--c:#9b5de5">
+      <span class="badge">🎨</span>
+      <h3>Arts &amp; Creativity</h3>
+      <p>Drawing, music, dance, crafts, and theater.</p>
+      <span class="go">View topics <b>→</b></span>
+    </a>
+
+    <a class="subject" href="topics.html?subject=4" style="--c:#3ddc97">
+      <span class="badge">❤️</span>
+      <h3>Life Skills &amp; Values</h3>
+      <p>Kindness, safety, money smarts, and responsibility.</p>
+      <span class="go">View topics <b>→</b></span>
+    </a>
+
+    <a class="subject" href="topics.html?subject=5" style="--c:#ff6b6b">
+      <span class="badge">✍️</span>
+      <h3>Filipino</h3>
+      <p>Alpabeto, panitikan, wika, at pagsulat.</p>
+      <span class="go">View topics <b>→</b></span>
+    </a>
+
+    <a class="subject" href="topics.html?subject=6" style="--c:#00bbf9">
+      <span class="badge">🌏</span>
+      <h3>Araling Panlipunan</h3>
+      <p>Komunidad, kasaysayan, kultura, at ekonomiks.</p>
+      <span class="go">View topics <b>→</b></span>
+    </a>
+
+    <a class="subject" href="topics.html?subject=7" style="--c:#6a45d6">
+      <span class="badge">💻</span>
+      <h3>Technology &amp; Computer Skills</h3>
+      <p>Typing, internet, web design, and coding.</p>
+      <span class="go">View topics <b>→</b></span>
+    </a>
+
+    <a class="subject" href="topics.html?subject=8" style="--c:#f15bb5">
+      <span class="badge">🏃</span>
+      <h3>Physical Education &amp; Health</h3>
+      <p>Movement, fitness, sports, and healthy living.</p>
+      <span class="go">View topics <b>→</b></span>
+    </a>
+
+    <a class="subject" href="topics.html?subject=9" style="--c:#ff9f1c">
+      <span class="badge">🛠️</span>
+      <h3>TLE / EPP &amp; Entrepreneurship</h3>
+      <p>Home skills, gardening, crafts, and business ideas.</p>
+      <span class="go">View topics <b>→</b></span>
+    </a>
+
   </div>
-  <div class="grid" id="grid"></div>
-</main>
+</section>
 
 <footer class="site-footer">
   <span class="foot-book">📖</span>
@@ -71,7 +146,7 @@
     <a href="privacy.html">Privacy Policy</a>
     <a href="refund.html">Refund Policy</a>
   </p>
-  <p>© 2026 Learniverse. Inspiring Curiosity, Creativity, and Lifelong Learning. ♥</p>
+  <p>© 2026 Learniverse. Inspiring Curiosity, Creativity, and Lifelong Learning. ❤️</p>
 </footer>
 
 <div class="scrim" id="scrim"></div>
