@@ -479,3 +479,96 @@ h2 { font-size: 2.3rem; font-weight: 800; }
 @media (max-width: 1080px) { .subjects { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 760px)  { .subjects { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 440px)  { .subjects { grid-template-columns: 1fr; } }
+/* ANIMATED VISIT LEARNIVERSE BUTTON */
+.visit-learniverse-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    margin-top: 25px;
+    padding: 15px 30px;
+
+    color: white;
+    text-decoration: none;
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+
+    background: linear-gradient(
+        120deg,
+        #7041e8,
+        #a34de8,
+        #ec65b7,
+        #ffad5c,
+        #7041e8
+    );
+
+    background-size: 300% 300%;
+    border: 3px solid white;
+    border-radius: 50px;
+
+    box-shadow:
+        0 8px 20px rgba(112, 65, 232, 0.30),
+        0 0 15px rgba(236, 101, 183, 0.25);
+
+    animation:
+        colorfulGradient 5s ease infinite,
+        buttonFloat 2s ease-in-out infinite;
+
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Color-changing background */
+@keyframes colorfulGradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Floating animation */
+@keyframes buttonFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Hover effect */
+.visit-learniverse-btn:hover {
+    transform: scale(1.08);
+    box-shadow:
+        0 12px 28px rgba(112, 65, 232, 0.40),
+        0 0 25px rgba(236, 101, 183, 0.50);
+}
+
+/* Button icons */
+.visit-learniverse-btn .visit-icon {
+    font-size: 21px;
+}
+
+.visit-learniverse-btn .visit-arrow {
+    font-size: 20px;
+    transition: transform 0.3s ease;
+}
+
+.visit-learniverse-btn:hover .visit-arrow {
+    transform: translateX(6px);
+}
+
+/* Mobile adjustment */
+@media (max-width: 600px) {
+    .visit-learniverse-btn {
+        font-size: 14px;
+        padding: 12px 23px;
+        margin-top: 20px;
+    }
+}
