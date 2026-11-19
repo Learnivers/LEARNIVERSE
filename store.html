@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="store.css">
+<link rel="stylesheet" href="store-topics.css">
 </head>
 <body>
 
@@ -48,6 +49,7 @@
 
 <main id="books">
   <h2>Our digital books</h2>
+  <p style="margin:0 0 14px"><a href="#store-topics" style="font-weight:800">📘 Browse all learning topics, Kindergarten to Grade 10 ↓</a></p>
   <div class="filters" id="filters" role="group" aria-label="Filter by learning area"></div>
   <div class="tools">
     <input type="search" id="search" placeholder="Search books" aria-label="Search books">
@@ -61,6 +63,9 @@
   </div>
   <div class="grid" id="grid"></div>
 </main>
+
+<!-- LEARNING TOPICS: every topic from Kindergarten to Grade 10, by subject and grade -->
+<section id="store-topics"></section>
 
 <footer class="site-footer">
   <span class="foot-book">📖</span>
@@ -161,6 +166,7 @@ $("#closeCart").onclick=$("#scrim").onclick=()=>openCart(false);
 document.addEventListener("keydown",e=>{if(e.key==="Escape")openCart(false)});
 drawFilters();drawBooks();drawCart();
 </script>
+<script src="store-topics.js"></script>
 <script src="back.js"></script>
 </body>
 </html>
