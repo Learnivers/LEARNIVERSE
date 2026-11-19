@@ -545,13 +545,9 @@ h2 { font-size: 2.3rem; font-weight: 800; }
         padding: 12px 22px;
     }
 }
-.photo-stage {
-    position: relative;
-}
-
 .visit-learniverse-btn {
     position: absolute;
-    top: 300px;
+    top: 470px; /* Moves button down to the HERE area */
     left: 50%;
     transform: translateX(-50%);
 
@@ -560,8 +556,8 @@ h2 { font-size: 2.3rem; font-weight: 800; }
     justify-content: center;
     gap: 12px;
 
-    padding: 15px 30px;
     min-width: 220px;
+    padding: 15px 30px;
 
     border: 3px solid white;
     border-radius: 50px;
@@ -582,7 +578,6 @@ h2 { font-size: 2.3rem; font-weight: 800; }
 
     background-size: 300% 300%;
     box-shadow: 0 8px 22px rgba(112, 65, 232, .35);
-
     animation: visitGradient 5s ease infinite;
     transition: .3s ease;
     z-index: 10;
@@ -590,11 +585,4 @@ h2 { font-size: 2.3rem; font-weight: 800; }
 
 .visit-learniverse-btn:hover {
     transform: translateX(-50%) scale(1.08);
-    box-shadow: 0 12px 28px rgba(112, 65, 232, .45);
-}
-
-@keyframes visitGradient {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
 }
