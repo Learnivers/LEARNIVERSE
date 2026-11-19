@@ -77,14 +77,14 @@ const BOOKS = [
   [
     "My First Alphabet Book",
     "Language & Reading",
-    10,
+    149,
     "Ages 3–10"
   ],
 
   [
     "Word Builders: Vocabulary Fun",
     "Language & Reading",
-    10,
+    179,
     "Ages 5–15"
   ],
 
