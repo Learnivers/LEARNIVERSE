@@ -1,14 +1,11 @@
-
 // ==========================================
 // LEARNIVERSE BOOK DATA
 // Shared by store.html and checkout.html
 // Edit book titles, categories, and prices here.
 // ==========================================
 
-
 // 10 LEARNING SUBJECTS
 const AREAS = {
-
   "Language & Reading": [
     "#ff7eb6",
     "#ffe3f0",
@@ -68,31 +65,26 @@ const AREAS = {
     "#ffecd5",
     "🛠️"
   ]
-
 };
-
 
 // ==========================================
 // DIGITAL BOOK COLLECTION
 // Format:
 // [Book Title, Learning Area, Price, Age Range]
 // ==========================================
-
 const BOOKS = [
-
   // 1. LANGUAGE & READING
-
   [
     "My First Alphabet Book",
     "Language & Reading",
-    149,
+    10,
     "Ages 3–10"
   ],
 
   [
     "Word Builders: Vocabulary Fun",
     "Language & Reading",
-    179,
+    10,
     "Ages 5–15"
   ],
 
