@@ -446,3 +446,36 @@ h2 { font-size: 2.3rem; font-weight: 800; }
     line-height: 1.8;
   }
 }
+/* ===== Our Books: 10 subject cards (add to the end of style.css) ===== */
+.subjects {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+}
+.subject {
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column; align-items: flex-start;
+  background: #fff; border-radius: 24px; padding: 20px 16px 16px;
+  text-decoration: none; color: inherit;
+  box-shadow: 0 10px 22px rgba(106, 69, 214, .13);
+  transition: transform .2s, box-shadow .2s;
+}
+.subject::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 6px; background: var(--c, #6a45d6);
+}
+.subject:hover { transform: translateY(-6px); box-shadow: 0 16px 28px rgba(106, 69, 214, .24); }
+.subject .badge {
+  width: 54px; height: 54px; border-radius: 18px; margin-bottom: 10px;
+  display: flex; align-items: center; justify-content: center; font-size: 1.8rem;
+  background: #f3eeff;
+  background: color-mix(in srgb, var(--c, #6a45d6) 20%, #fff);
+}
+.subject h3 { font-size: 1.02rem; line-height: 1.25; margin-bottom: 4px; }
+.subject p { margin: 0 0 12px; color: var(--muted); font-size: .88rem; line-height: 1.5; flex: 1; }
+.subject .go { font-weight: 800; font-size: .88rem; color: var(--purple); }
+.subject .go b { display: inline-block; transition: transform .2s; }
+.subject:hover .go b { transform: translateX(5px); }
+
+@media (max-width: 1080px) { .subjects { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 760px)  { .subjects { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 440px)  { .subjects { grid-template-columns: 1fr; } }
