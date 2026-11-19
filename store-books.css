@@ -1,0 +1,6 @@
+/* Extra styles for the topic books (add after store.css) */
+.book .desc {
+  margin: 6px 0 10px; font-size: .84rem; line-height: 1.45; color: #6d5a86;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+.more { text-align: center; margin: 28px 0 10px; }
