@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Learniverse Store – Digital Books for Children</title>
-<meta name="description" content="Buy digital educational books for children in five learning areas.">
+<meta name="description" content="Buy digital educational books for children, one book for every lesson topic from Kindergarten to Grade 10.">
 <link rel="icon" type="image/png" href="LOOGO.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="store-topics.css">
-  <link rel="stylesheet" href="store.css">
+<link rel="stylesheet" href="store.css">
+<link rel="stylesheet" href="store-books.css">
 </head>
 <body>
 
@@ -31,7 +31,7 @@
   <div class="hero-text">
     <h1>Digital books that make learning fun</h1>
     <svg class="swoosh" viewBox="0 0 340 20" aria-hidden="true"><path d="M6 13 C 90 2, 220 4, 334 10" stroke="#ffc233" stroke-width="5" fill="none" stroke-linecap="round"/></svg>
-    <p>Educational books for children in five learning areas. Pick your books, pay with GCash or Maya, and read on any device.</p>
+    <p>One digital book for every lesson topic, from Kindergarten to Grade 10, in ten learning areas. Pick your books, pay with GCash or Maya, and read on any device.</p>
     <a class="btn primary" href="#books">Shop books</a>
     <p class="script">Let’s learn, explore, and grow together! ♥</p>
   </div>
@@ -49,8 +49,8 @@
 
 <main id="books">
   <h2>Our digital books</h2>
-  <p style="margin:0 0 14px"><a href="#store-topics" style="font-weight:800">📘 Browse all learning topics, Kindergarten to Grade 10 ↓</a></p>
   <div class="filters" id="filters" role="group" aria-label="Filter by learning area"></div>
+  <div class="filters" id="gfilters" role="group" aria-label="Filter by grade level"></div>
   <div class="tools">
     <input type="search" id="search" placeholder="Search books" aria-label="Search books">
     <select id="sort" aria-label="Sort books">
@@ -62,10 +62,8 @@
     <span class="shown" id="shown" aria-live="polite"></span>
   </div>
   <div class="grid" id="grid"></div>
+  <div class="more" id="more"></div>
 </main>
-
-<!-- LEARNING TOPICS: every topic from Kindergarten to Grade 10, by subject and grade -->
-<section id="store-topics"></section>
 
 <footer class="site-footer">
   <span class="foot-book">📖</span>
@@ -91,8 +89,10 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="books.js"></script>
+<script src="topic-books.js"></script>
 <script>
-let cart=loadCart(),filter="All",term="",sort="featured";
+const PAGE=24;
+let cart=loadCart(),filter="All",gfilter="All",term="",sort="featured",limit=PAGE;
 
 function actHTML(id){
   const n=cart[id]||0;
@@ -100,7 +100,7 @@ function actHTML(id){
           :`<button class="add" data-act="inc" data-id="${id}">Add to cart</button>`;
 }
 function list(){
-  let l=BOOKS.filter(b=>(filter==="All"||b.area===filter)&&b.title.toLowerCase().includes(term));
+  let l=BOOKS.filter(b=>(filter==="All"||b.area===filter)&&(gfilter==="All"||b.grade===gfilter)&&(b.title+" "+b.area).toLowerCase().includes(term));
   if(sort==="low")l=[...l].sort((a,b)=>a.price-b.price);
   else if(sort==="high")l=[...l].sort((a,b)=>b.price-a.price);
   else if(sort==="az")l=[...l].sort((a,b)=>a.title.localeCompare(b.title));
@@ -109,14 +109,20 @@ function list(){
 function drawFilters(){
   $("#filters").innerHTML=["All",...Object.keys(AREAS)].map(a=>`<button aria-pressed="${a===filter}" data-a="${a}">${a}</button>`).join("");
 }
+function drawGradeFilters(){
+  const g=window.TOPIC_GRADES||[];
+  $("#gfilters").innerHTML=g.length?["All",...g].map(x=>`<button aria-pressed="${x===gfilter}" data-g="${x}">${x==="All"?"All grades":x}</button>`).join(""):"";
+}
 function drawBooks(){
-  const l=list();
+  const l=list(),v=l.slice(0,limit);
   $("#shown").textContent=l.length+(l.length===1?" book":" books");
-  $("#grid").innerHTML=l.length?l.map((b,i)=>{
+  $("#more").innerHTML=l.length>v.length?`<button class="btn primary" id="moreBtn">Show more books (${l.length-v.length} left)</button>`:"";
+  $("#grid").innerHTML=v.length?v.map((b,i)=>{
     const [c,t,e]=AREAS[b.area];
     return `<article class="book" style="--k:${c};--t:${t};--i:${Math.min(i,9)}">
       <div class="cover" aria-hidden="true"><span>${e}</span></div>
       <div class="info"><h3>${b.title}</h3><small>${b.area} · ${b.age}</small>
+      ${b.desc?`<p class="desc">${b.desc}</p>`:""}
       <div class="row"><span class="price">${peso(b.price)}</span><span class="act" data-book="${b.id}">${actHTML(b.id)}</span></div></div>
     </article>`}).join(""):`<p class="none">No books match your search. Try another word.</p>`;
 }
@@ -157,16 +163,18 @@ document.addEventListener("click",e=>{
   const r=e.target.closest("[data-rm]");
   if(r){delete cart[r.dataset.rm];saveCart(cart);drawActs();drawCart()}
   const f=e.target.closest("[data-a]");
-  if(f){filter=f.dataset.a;drawFilters();drawBooks()}
+  if(f){filter=f.dataset.a;limit=PAGE;drawFilters();drawBooks()}
+  const g=e.target.closest("[data-g]");
+  if(g){gfilter=g.dataset.g;limit=PAGE;drawGradeFilters();drawBooks()}
+  if(e.target.closest("#moreBtn")){limit+=PAGE;drawBooks()}
 });
-$("#search").oninput=e=>{term=e.target.value.trim().toLowerCase();drawBooks()};
-$("#sort").onchange=e=>{sort=e.target.value;drawBooks()};
+$("#search").oninput=e=>{term=e.target.value.trim().toLowerCase();limit=PAGE;drawBooks()};
+$("#sort").onchange=e=>{sort=e.target.value;limit=PAGE;drawBooks()};
 $("#openCart").onclick=()=>openCart(true);
 $("#closeCart").onclick=$("#scrim").onclick=()=>openCart(false);
 document.addEventListener("keydown",e=>{if(e.key==="Escape")openCart(false)});
-drawFilters();drawBooks();drawCart();
+drawFilters();drawGradeFilters();drawBooks();drawCart();
 </script>
-<script src="store-topics.js"></script>
 <script src="back.js"></script>
 </body>
 </html>
